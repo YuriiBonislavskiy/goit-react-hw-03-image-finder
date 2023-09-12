@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import API from 'Services/SearchDataApi';
 import css from './ImageGallery.module.css';
 import ImageGalleryItem from '../ImageGalleryItem';
@@ -28,7 +28,6 @@ class ImageGallery extends Component {
       };
     });
   };
-  myRef = React.createRef();
 
   scrollToMyRef = () => {
     window.scrollTo(0, this.myRef.current.offsetHeight);
@@ -75,8 +74,9 @@ class ImageGallery extends Component {
           </ul>
           <button
             type="button"
+            className={css.Button}
             onClick={this.nextPage}
-            key={'809800oiuouyuijh'}
+            // key={'809800oiuouyuijh'}
           >
             Next
           </button>
