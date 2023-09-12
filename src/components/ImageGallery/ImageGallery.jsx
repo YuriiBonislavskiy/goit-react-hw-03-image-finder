@@ -34,6 +34,7 @@ class ImageGallery extends Component {
     window.scrollTo(0, this.myRef.current.offsetHeight);
   };
 
+  
   componentDidUpdate(prevProps, prevState) {
     if (this.state.page === 0) {
       this.setState({page: 1,})
