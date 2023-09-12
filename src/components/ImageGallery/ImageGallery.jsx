@@ -14,15 +14,15 @@ class ImageGallery extends Component {
   state = {
     searchResults: [],
     Base_URL: 'https://pixabay.com/api/',
-    page: 1,
-    pageSize: 16,
+    page: 0,
+    pageSize: 12,
     apiKey: '38758565-30dff5e0c8e04bcbf19e28f96',
     status: Status.IDLE,
     error: '',
   };
 
   nextPage = () => {
-    console.log("Нажата кнопка");
+    console.log(`StatePage:  ${this.state.page}`);
     this.setState(prevState => {
       return {
         page: (prevState.page += 1),
@@ -35,13 +35,18 @@ class ImageGallery extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
+    if (this.state.page === 0) {
+      this.setState({page: 1,})
+    }
     const prevSearchText = prevProps.searchText;
     const nextSearchText = this.props.searchText;
     const prevPage = prevState.page;
     const nextPage = this.state.page;
+    console.log(`prevPage:  ${prevPage}    ${prevSearchText}`);
+    console.log(`nextPage:  ${nextPage}    ${nextSearchText}`);
     const { Base_URL, pageSize, apiKey } = this.state;
 
-    if (prevSearchText !== nextSearchText || prevPage !== nextPage) {
+    if (prevPage !== nextPage) {
       this.setState({ status: Status.PENDING });
       API.fetchData(nextSearchText, Base_URL, nextPage, pageSize, apiKey)
         .then(({ hits, total }) =>
