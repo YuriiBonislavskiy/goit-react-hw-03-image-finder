@@ -65,12 +65,13 @@ class ImageGallery extends Component {
       return (
         <div>
           <ul className={css.ImageGallery}>
-            {searchResults.map(
-              ({ id, webformatURL, tags }, index) =>
-                  <li className={css.ImageGalleryItem} key={id}>
-                    <ImageGalleryItem webformatURL={webformatURL} tags={tags} />
-                  </li>
-            )}
+            {searchResults.map(({ id, webformatURL, tags }, index) => (
+              <ImageGalleryItem
+                webformatURL={webformatURL}
+                tags={tags}
+                key={id}
+              />
+            ))}
           </ul>
           <button
             type="button"

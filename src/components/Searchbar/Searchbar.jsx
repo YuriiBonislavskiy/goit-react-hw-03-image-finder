@@ -36,7 +36,9 @@ export const Searchbar = ({ searchText, onHandleSubmit }) => {
             className={css.SearchFormInput}
             type="text"
             name="searchText"
-            placeholder="What to find?"
+            autoComplete="off"
+            autoFocus
+            placeholder="Search images and photos"
           />
         </Form>
       </div>

@@ -1,12 +1,14 @@
 import css from './ImageGalleryItem.module.css';
 
-const ImageGalleryItem = ({ webformatURL, tags, index,  }) => {
+const ImageGalleryItem = ({ webformatURL, tags, id  }) => {
   return (
-    <img
-      src={webformatURL}
-      className={css.ImageGalleryItemImage}
-      alt={tags}
-    />
+    <li className={css.ImageGalleryItem} key={id}>
+      <img
+        src={webformatURL}
+        className={css.ImageGalleryItemImage}
+        alt={tags}
+      />
+    </li>
   );
 };
 
