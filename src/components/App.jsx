@@ -11,7 +11,11 @@ class App extends Component {
   };
 
   handleSubmit = text => {
-    this.setState({ searchText: text });
+    this.setState({ searchText: text, page: 1, });
+  };
+
+  handleClick = page => {
+    this.setState({ page: page });
   };
 
   render() {
@@ -20,7 +24,11 @@ class App extends Component {
     return (
       <div>
         <Searchbar searchText={searchText} onHandleSubmit={this.handleSubmit} />
-        <ImageGallery searchText={searchText} />
+        <ImageGallery
+          searchText={searchText}
+          handleClick={this.handleClick}
+          page={this.state.page}
+        />
       </div>
     );
   }

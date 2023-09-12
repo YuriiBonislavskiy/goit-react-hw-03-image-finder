@@ -14,7 +14,7 @@ class ImageGallery extends Component {
   state = {
     searchResults: [],
     Base_URL: 'https://pixabay.com/api/',
-    page: 0,
+    // prevPage: 0,
     pageSize: 12,
     apiKey: '38758565-30dff5e0c8e04bcbf19e28f96',
     status: Status.IDLE,
@@ -22,29 +22,27 @@ class ImageGallery extends Component {
   };
 
   nextPage = () => {
+  const { page } = this.props;
     console.log(`StatePage:  ${this.state.page}`);
-    this.setState(prevState => {
-      return {
-        page: (prevState.page += 1),
-      };
-    });
+    this.props.handleClick(page + 1);
   };
 
   scrollToMyRef = () => {
     window.scrollTo(0, this.myRef.current.offsetHeight);
   };
 
-  
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.page === 0) {
-      this.setState({page: 1,})
-    }
-    const prevSearchText = prevProps.searchText;
+    // if (this.state.page === 0) {
+    //   this.setState({page: 1,})
+    // }
+    console.log(this.props);
+    console.log(prevProps);
+    // const prevSearchText = prevProps.searchText;
     const nextSearchText = this.props.searchText;
-    const prevPage = prevState.page;
-    const nextPage = this.state.page;
-    console.log(`prevPage:  ${prevPage}    ${prevSearchText}`);
-    console.log(`nextPage:  ${nextPage}    ${nextSearchText}`);
+    const prevPage = prevProps.page;
+    const nextPage = this.props.page;
+    // console.log(`prevPage:  ${prevPage}    ${prevSearchText}`);
+    // console.log(`nextPage:  ${nextPage}    ${nextSearchText}`);
     const { Base_URL, pageSize, apiKey } = this.state;
 
     if (prevPage !== nextPage) {
@@ -53,6 +51,7 @@ class ImageGallery extends Component {
         .then(({ hits, total }) =>
           this.setState(prevState => {
             if (total > 0) {
+              // this.setState({ prevPage: nextPage, });
               return {
                 searchResults: [...prevState.searchResults, ...hits],
                 status: Status.RESOLVED,
