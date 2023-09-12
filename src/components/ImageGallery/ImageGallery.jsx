@@ -22,6 +22,7 @@ class ImageGallery extends Component {
   };
 
   nextPage = () => {
+    console.log("Нажата кнопка");
     this.setState(prevState => {
       return {
         page: (prevState.page += 1),
