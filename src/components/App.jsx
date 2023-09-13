@@ -5,21 +5,21 @@ import ImageGallery from './ImageGallery';
 class App extends Component {
   state = {
     searchText: '',
+    searchResults: [],
     Base_URL: '',
     page: 0,
     pageSize: 0,
   };
 
   handleSubmit = text => {
-    this.setState({ searchText: text, page: 1, });
+    this.setState({ searchText: text, searchResults: [], page: 1 });
   };
 
-  handleClick = page => {
-    this.setState({ page: page });
+  handleClick = (searchResults, page) => {
+    this.setState({ searchResults, page });
   };
 
   render() {
-    // console.log(this.state.searchText);
     const { searchText } = this.state;
     return (
       <div>
@@ -28,6 +28,7 @@ class App extends Component {
           searchText={searchText}
           handleClick={this.handleClick}
           page={this.state.page}
+          searchResults={this.state.searchResults}
         />
       </div>
     );
