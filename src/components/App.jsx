@@ -5,18 +5,17 @@ import ImageGallery from './ImageGallery';
 class App extends Component {
   state = {
     searchText: '',
-    searchResults: [],
     Base_URL: '',
     page: 1,
     pageSize: 0,
   };
 
   handleSubmit = text => {
-    this.setState({ searchText: text, searchResults: [], page: 1 });
+    this.setState({ searchText: text, page: 1 });
   };
 
-  handleClick = (searchResults, page) => {
-    this.setState({ searchResults, page });
+  handleClick = (page) => {
+    this.setState({ page });
   };
 
   render() {
@@ -28,7 +27,6 @@ class App extends Component {
           searchText={searchText}
           handleClick={this.handleClick}
           page={this.state.page}
-          searchResults={this.state.searchResults}
         />
       </div>
     );
