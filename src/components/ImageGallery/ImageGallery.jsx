@@ -69,7 +69,7 @@ class ImageGallery extends Component {
 
   render() {
     const { searchResults, status, error, totalHits } = this.state;
-    // console.log(status, '   ', searchResults.length, '  ', totalHits);
+    console.log(status, '   ', searchResults.length, '  ', totalHits);
     if (status === 'resolved' || status === 'resolved_no-button') {
       return (
         <div>
