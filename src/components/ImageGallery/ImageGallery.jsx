@@ -15,6 +15,7 @@ const Status = {
 class ImageGallery extends Component {
   state = {
     searchResults: [],
+    totalHits: 0,
     Base_URL: 'https://pixabay.com/api/',
     pageSize: 12,
     apiKey: '38758565-30dff5e0c8e04bcbf19e28f96',
@@ -25,7 +26,13 @@ class ImageGallery extends Component {
   nextPage = page => {
     // const { page } = this.props;
     const { searchResults } = this.state;
-    this.props.handleClick(searchResults, page + 1);
+    this.props.handleClick(searchResults, page);
+  };
+
+  selectedItemView = selectedId => {
+    const { searchResults } = this.state;
+    const selectedItem = searchResults.filter(({ id }) => id === selectedId);
+    console.log(selectedItem);
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -39,26 +46,30 @@ class ImageGallery extends Component {
     if (prevSearchText !== nextSearchText || prevPage !== nextPage) {
       this.setState({ status: Status.PENDING });
       API.fetchData(nextSearchText, Base_URL, nextPage, pageSize, apiKey)
-        .then(({ hits, totalHits }) =>
+        .then(response => {
+          const { hits, totalHits } = response;
           this.setState(() => {
             if (totalHits > 0) {
               const fetchResult = [...searchResults, ...hits];
               return {
                 searchResults: fetchResult,
-                status:  fetchResult.length < totalHits
+                totalHits: totalHits,
+                status:
+                  fetchResult.length < totalHits
                     ? Status.RESOLVED
                     : Status.RESOLVED_NO_BUTTON,
               };
             }
             return { error: 'Картинки не найдены', status: Status.REJECTED };
-          })
-        )
+          });
+        })
         .catch(error => this.setState({ error, status: Status.REJECTED }));
     }
   }
 
   render() {
-    const { searchResults, status, error } = this.state;
+    const { searchResults, status, error, totalHits } = this.state;
+    // console.log(status, '   ', searchResults.length, '  ', totalHits);
     if (status === 'resolved' || status === 'resolved_no-button') {
       return (
         <div>
@@ -67,18 +78,17 @@ class ImageGallery extends Component {
               <ImageGalleryItem
                 webformatURL={webformatURL}
                 tags={tags}
+                id={id}
+                onSelectedItemView={this.selectedItemView}
                 key={id}
               />
             ))}
           </ul>
-         { (status === 'resolved') &&
-          <Button page={this.props.page} onNextPage={this.nextPage} />}
+          {status === 'resolved' && (
+            <Button page={this.props.page} onNextPage={this.nextPage} />
+          )}
         </div>
       );
-      
-    }
-    if (status === 'resolved') {
-      return <Button page={this.props.page} onNextPage={this.nextPage} />;
     }
 
     if (status === 'rejected') {

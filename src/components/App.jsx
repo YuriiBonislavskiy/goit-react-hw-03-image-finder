@@ -7,7 +7,7 @@ class App extends Component {
     searchText: '',
     searchResults: [],
     Base_URL: '',
-    page: 0,
+    page: 1,
     pageSize: 0,
   };
 
