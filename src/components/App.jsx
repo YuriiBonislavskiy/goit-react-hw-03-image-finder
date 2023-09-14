@@ -5,9 +5,7 @@ import ImageGallery from './ImageGallery';
 class App extends Component {
   state = {
     searchText: '',
-    Base_URL: '',
     page: 1,
-    pageSize: 0,
   };
 
   handleSubmit = text => {

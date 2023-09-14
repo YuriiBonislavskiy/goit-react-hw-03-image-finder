@@ -1,3 +1,7 @@
+.galleryContainer {
+    text-align: center;
+}
+
 .ImageGallery {
     display: grid;
     max-width: calc(100vw - 48px);
@@ -9,5 +13,6 @@
     list-style: none;
     margin-left: auto;
     margin-right: auto;
+    border-color: rgb(240, 248, 255, 0);
 }
 

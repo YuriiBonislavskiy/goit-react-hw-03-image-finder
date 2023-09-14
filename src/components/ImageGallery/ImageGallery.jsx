@@ -4,6 +4,8 @@ import API from 'Services/SearchDataApi';
 import css from './ImageGallery.module.css';
 import ImageGalleryItem from '../ImageGalleryItem';
 import Button from '../Button';
+import ErrorFetch from '../ErrorFetch';
+import Modal from '../Modal';
 
 const Status = {
   IDLE: 'idle',
@@ -23,48 +25,8 @@ class ImageGallery extends Component {
     status: Status.IDLE,
     error: '',
     prevScrollPos: null,
-  };
-
-  nextPage = page => {
-    this.props.handleClick(page);
-    this.setState({
-      prevScrollPos: document.documentElement.scrollHeight,
-    });
-  };
-
-  selectedItemView = selectedId => {
-    const { searchResults } = this.state;
-    const selectedItem = searchResults.filter(({ id }) => id === selectedId);
-    console.log(selectedItem);
-  };
-
-  toScrollPos = () => {
-    // console.log(this.state.prevScrollPos);
-    this.state.prevScrollPos &&
-      window.scrollTo({
-        top: this.state.prevScrollPos,
-        behavior: 'auto',
-      });
-    window.scrollTo({
-      top: document.documentElement.scrollHeight,
-      behavior: 'smooth',
-    });
-  };
-
-  nextWithPrev = (searchResults, hits) => {
-    searchResults.forEach(result => {
-      result.isLoad = true;
-    });
-    hits.forEach(result => {
-      result.isLoad = false;
-    });
-    return [...searchResults, ...hits];
-  };
-  nextWithOutPrev = (hits) => {
-    hits.forEach(result => {
-      result.isLoad = false;
-    });
-    return [...hits];
+    showModal: false,
+    onViewPicture: null,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -74,7 +36,6 @@ class ImageGallery extends Component {
     const prevPage = prevProps.page;
     const nextPage = this.props.page;
     const { Base_URL, pageSize, apiKey } = this.state;
-    // console.log(this.props);
     if (prevSearchText !== nextSearchText || prevPage !== nextPage) {
       prevSearchText !== nextSearchText && this.setState({ searchResults: [] });
 
@@ -97,7 +58,10 @@ class ImageGallery extends Component {
                     : Status.RESOLVED_NO_BUTTON,
               };
             }
-            return { error: 'Картинки не найдены', status: Status.REJECTED };
+            return {
+              error: `Nothing was found for request <${nextSearchText}>`,
+              status: Status.REJECTED,
+            };
           });
         })
         .catch(error => this.setState({ error, status: Status.REJECTED }));
@@ -105,12 +69,60 @@ class ImageGallery extends Component {
     this.toScrollPos();
   }
 
+  nextPage = page => {
+    this.props.handleClick(page);
+    this.setState({
+      prevScrollPos: document.documentElement.scrollHeight,
+    });
+  };
+
+  selectedItemView = selectedId => {
+    const { searchResults } = this.state;
+    const selectedItem = searchResults.filter(({ id }) => id === selectedId);
+    this.setState( state => ({ onViewPicture: selectedItem[0].largeImageURL }));
+    this.toggleModal();
+  };
+
+  toScrollPos = () => {
+    this.state.prevScrollPos &&
+      window.scrollTo({
+        top: this.state.prevScrollPos,
+        behavior: 'auto',
+      });
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'smooth',
+    });
+  };
+
+  nextWithPrev = (searchResults, hits) => {
+    searchResults.forEach(result => {
+      result.isLoad = true;
+    });
+    hits.forEach(result => {
+      result.isLoad = false;
+    });
+    return [...searchResults, ...hits];
+  };
+  nextWithOutPrev = hits => {
+    hits.forEach(result => {
+      result.isLoad = false;
+    });
+    return [...hits];
+  };
+
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+    }));
+  };
+
   render() {
-    const { searchResults, status, error } = this.state;
-    // console.log(status, '   ', searchResults.length, '  ', totalHits);
+    const { searchResults, status, error, showModal, onViewPicture } =
+      this.state;
     if (status === 'resolved' || status === 'resolved_no-button') {
       return (
-        <div>
+        <div className={css.galleryContainer}>
           <ul className={css.ImageGallery}>
             {searchResults.map(({ id, webformatURL, tags, isLoad }) => (
               <ImageGalleryItem
@@ -126,12 +138,15 @@ class ImageGallery extends Component {
           {status === 'resolved' && (
             <Button page={this.props.page} onNextPage={this.nextPage} />
           )}
+          {showModal && (
+            <Modal onViewPicture={onViewPicture} onClose={this.toggleModal} />
+          )}
         </div>
       );
     }
 
     if (status === 'rejected') {
-      return <p>{error}</p>;
+      return <ErrorFetch massage={error} />;
     }
   }
 }

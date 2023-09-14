@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-// import { ColorRing } from 'react-loader-spinner';
-import Loader from './Loader';
+import PropTypes from 'prop-types';
+import Loader from '../Loader';
 import css from './ImageGalleryItem.module.css';
 
 const ImageGalleryItem = ({ webformatURL, tags, id, onSelectedItemView, isLoad }) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   return (
     <li className={css.ImageGalleryItem} key={id}>
       <img
@@ -14,13 +14,21 @@ const ImageGalleryItem = ({ webformatURL, tags, id, onSelectedItemView, isLoad }
         onClick={() => {
           onSelectedItemView(id);
         }}
-        onLoad={() => !isLoad && setLoading(true)}
+        onLoad={() => !isLoad && setLoading(false)}
       />
-      {!loading && !isLoad && (
+      {loading && !isLoad && (
         <Loader/>
       )}
     </li>
   );
+};
+
+ImageGalleryItem.propTypes = {
+  webformatURL: PropTypes.string.isRequired,
+  tags: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
+  onSelectedItemView: PropTypes.func.isRequired,
+  isLoad: PropTypes.bool.isRequired,
 };
 
 export default ImageGalleryItem;
