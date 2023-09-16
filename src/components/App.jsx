@@ -4,7 +4,6 @@ import ImageGallery from './ImageGallery';
 
 class App extends Component {
   state = {
-    searchResults: [],
     searchText: '',
     page: 1,
   };
@@ -13,7 +12,7 @@ class App extends Component {
     this.setState({ searchText: text, page: 1 });
   };
 
-  handleClick = page => {
+  handleClick = (page) => {
     this.setState({ page });
   };
 

@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import Loader from '../Loader';
+// import Loader from '../Loader';
 import css from './ImageGalleryItem.module.css';
 
-const ImageGalleryItem = ({ webformatURL, tags, id, onSelectedItemView }) => {
-  const [loading, setLoading] = useState(true);
+// const ImageGalleryItem = ({ webformatURL, tags, id, onSelectedItemView, setLoading, curentTotalResults, index }) => {
+const ImageGalleryItem = ({ webformatURL, tags, id, onSelectedItemView}) => {
+  // const [loading, setLoading] = useState(true);
+  // const fuulLoading = index  === curentTotalResults - 1; 
+  // console.log(curentTotalResults, '   ', index + 1, '  ', fuulLoading);
   return (
     <li className={css.ImageGalleryItem} key={id}>
       <img
@@ -14,7 +17,7 @@ const ImageGalleryItem = ({ webformatURL, tags, id, onSelectedItemView }) => {
         onClick={() => {
           onSelectedItemView(id);
         }}
-        // onLoad={() => !isLoad && setLoading(false)}
+        // onLoad={() => fuulLoading && setLoading()}
       />
       {/* {loading && !isLoad && (
         <Loader/>
@@ -28,7 +31,7 @@ ImageGalleryItem.propTypes = {
   tags: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
   onSelectedItemView: PropTypes.func.isRequired,
-  isLoad: PropTypes.bool.isRequired,
+  // isLoad: PropTypes.bool.isRequired,
 };
 
 export default ImageGalleryItem;
