@@ -3,11 +3,11 @@ import css from './Button.module.css';
 
 const Button = ({ page, onNextPage }) => {
   const nextPage = () => {
-    onNextPage(page + 1);
+    onNextPage(page);
   };
   return (
     <button type="button" className={css.Button} onClick={nextPage}>
-      Next
+      Load more
     </button>
   );
 };

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Loader from '../Loader';
 import css from './ImageGalleryItem.module.css';
 
-const ImageGalleryItem = ({ webformatURL, tags, id, onSelectedItemView, isLoad }) => {
+const ImageGalleryItem = ({ webformatURL, tags, id, onSelectedItemView }) => {
   const [loading, setLoading] = useState(true);
   return (
     <li className={css.ImageGalleryItem} key={id}>
@@ -14,11 +14,11 @@ const ImageGalleryItem = ({ webformatURL, tags, id, onSelectedItemView, isLoad }
         onClick={() => {
           onSelectedItemView(id);
         }}
-        onLoad={() => !isLoad && setLoading(false)}
+        // onLoad={() => !isLoad && setLoading(false)}
       />
-      {loading && !isLoad && (
+      {/* {loading && !isLoad && (
         <Loader/>
-      )}
+      )} */}
     </li>
   );
 };

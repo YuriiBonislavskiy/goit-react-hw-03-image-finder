@@ -2,10 +2,10 @@ import { Component } from 'react';
 import PropTypes from 'prop-types';
 import API from 'Services/SearchDataApi';
 import css from './ImageGallery.module.css';
-import ImageGalleryItem from '../ImageGalleryItem';
+// import ImageGalleryItem from '../ImageGalleryItem';
 import Button from '../Button';
-import ErrorFetch from '../ErrorFetch';
-import Modal from '../Modal';
+// import ErrorFetch from '../ErrorFetch';
+// import Modal from '../Modal';
 
 const Status = {
   IDLE: 'idle',
@@ -30,47 +30,30 @@ class ImageGallery extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const searchResults = this.state.searchResults;
     const prevSearchText = prevProps.searchText;
     const nextSearchText = this.props.searchText;
     const prevPage = prevProps.page;
     const nextPage = this.props.page;
-    const { Base_URL, pageSize, apiKey } = this.state;
-    if (prevSearchText !== nextSearchText || prevPage !== nextPage) {
-      prevSearchText !== nextSearchText && this.setState({ searchResults: [] });
+    const { searchResults, Base_URL, pageSize, apiKey } = this.state;
 
+    if (prevSearchText !== nextSearchText || prevPage !== nextPage) {
       this.setState({ status: Status.PENDING });
+
       API.fetchData(nextSearchText, Base_URL, nextPage, pageSize, apiKey)
         .then(response => {
           const { hits, totalHits } = response;
-          this.setState(() => {
-            if (totalHits > 0) {
-              const fetchResult =
-                prevSearchText === nextSearchText
-                  ? this.nextWithPrev(searchResults, hits)
-                  : this.nextWithOutPrev(hits);
-              return {
-                searchResults: fetchResult,
-                totalHits: totalHits,
-                status:
-                  fetchResult.length < totalHits
-                    ? Status.RESOLVED
-                    : Status.RESOLVED_NO_BUTTON,
-              };
-            }
-            return {
-              error: `Nothing was found for request <${nextSearchText}>`,
-              status: Status.REJECTED,
-            };
+          this.setState({
+            searchResults: [...searchResults, ...hits],
+            totalHits: totalHits,
+            status: Status.RESOLVED,
           });
         })
         .catch(error => this.setState({ error, status: Status.REJECTED }));
     }
-    this.toScrollPos();
   }
 
   nextPage = page => {
-    this.props.handleClick(page);
+    this.props.handleClick(page + 1);
     this.setState({
       prevScrollPos: document.documentElement.scrollHeight,
     });
@@ -79,36 +62,8 @@ class ImageGallery extends Component {
   selectedItemView = selectedId => {
     const { searchResults } = this.state;
     const selectedItem = searchResults.filter(({ id }) => id === selectedId);
-    this.setState( state => ({ onViewPicture: selectedItem[0].largeImageURL }));
+    this.setState(state => ({ onViewPicture: selectedItem[0].largeImageURL }));
     this.toggleModal();
-  };
-
-  toScrollPos = () => {
-    this.state.prevScrollPos &&
-      window.scrollTo({
-        top: this.state.prevScrollPos,
-        behavior: 'auto',
-      });
-    window.scrollTo({
-      top: document.documentElement.scrollHeight,
-      behavior: 'smooth',
-    });
-  };
-
-  nextWithPrev = (searchResults, hits) => {
-    searchResults.forEach(result => {
-      result.isLoad = true;
-    });
-    hits.forEach(result => {
-      result.isLoad = false;
-    });
-    return [...searchResults, ...hits];
-  };
-  nextWithOutPrev = hits => {
-    hits.forEach(result => {
-      result.isLoad = false;
-    });
-    return [...hits];
   };
 
   toggleModal = () => {
@@ -118,36 +73,24 @@ class ImageGallery extends Component {
   };
 
   render() {
-    const { searchResults, status, error, showModal, onViewPicture } =
-      this.state;
-    if (status === 'resolved' || status === 'resolved_no-button') {
-      return (
-        <div className={css.galleryContainer}>
-          <ul className={css.ImageGallery}>
-            {searchResults.map(({ id, webformatURL, tags, isLoad }) => (
-              <ImageGalleryItem
-                webformatURL={webformatURL}
-                tags={tags}
-                id={id}
-                onSelectedItemView={this.selectedItemView}
-                key={id}
-                isLoad={isLoad}
+    const { searchResults } = this.state;
+    return (
+      <div className={css.galleryContainer}>
+        <ul className={css.ImageGallery}>
+          {searchResults.map(({ id, webformatURL, tags }) => (
+            <li className={css.ImageGalleryItem} key={id}>
+              <img
+                src={webformatURL}
+                className={css.ImageGalleryItemImage}
+                alt={tags}
               />
-            ))}
-          </ul>
-          {status === 'resolved' && (
-            <Button page={this.props.page} onNextPage={this.nextPage} />
-          )}
-          {showModal && (
-            <Modal onViewPicture={onViewPicture} onClose={this.toggleModal} />
-          )}
-        </div>
-      );
-    }
-
-    if (status === 'rejected') {
-      return <ErrorFetch massage={error} />;
-    }
+            </li>
+          ))}
+        </ul>
+        <Button page={this.props.page} onNextPage={this.nextPage} />
+      </div>
+    );
+    // }
   }
 }
 ImageGallery.propTypes = {
