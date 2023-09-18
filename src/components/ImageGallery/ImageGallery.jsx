@@ -101,16 +101,18 @@ class ImageGallery extends Component {
       <div className={css.galleryContainer}>
         <ul className={css.ImageGallery}>
           {searchResults.map(({ id, webformatURL, tags, isLoad }) => (
-            <ImageGalleryItem
-              webformatURL={webformatURL}
-              tags={tags}
-              id={id}
-              onSelectedItemView={this.selectedItemView}
-              key={id}
-              isLoad={isLoad}
-            />
-          ))}
+              <ImageGalleryItem
+                webformatURL={webformatURL}
+                tags={tags}
+                id={id}
+                onSelectedItemView={this.selectedItemView}
+                key={id}
+                isLoad={isLoad}
+              />
+            )
+          )}
         </ul>
+
         {status === 'pending' && <Loader />}
         {status === 'resolved' && (
           <Button page={this.props.page} onNextPage={this.nextPage} />
